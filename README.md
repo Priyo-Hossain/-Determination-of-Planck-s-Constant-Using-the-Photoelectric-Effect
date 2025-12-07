@@ -1,48 +1,39 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import linregress
+e = 1.602e-19
+n = int(input("Enter the number of data points: "))
+frequency = []
+stopping_potential = []
+print("\nEnter the frequency (in Hz) and stopping potential (in V):")
+for i in range(n):
+    f = float(input(f"  Frequency {i+1} (Hz): "))
+    V = float(input(f"  Stopping potential {i+1} (V): "))
+    frequency.append(f)
+    stopping_potential.append(V)
+f = np.array(frequency)
+Vs = np.array(stopping_potential)
+slope, intercept, r_value, p_value, std_err = linregress(f, Vs)
 
-By plotting `V₀` vs. `f`, the slope of the line equals `h/e`, allowing us to calculate Planck's constant.
+h_calculated = slope * e
+phi = -intercept * e
+threshold_frequency = phi / h_calculated
 
----
+print("\n----- Results -----")
+print(f"Slope (V/Hz): {slope:.4e}")
+print(f"Intercept (V): {intercept:.4e}")
+print(f"Calculated Planck’s constant (h): {h_calculated:.4e} J·s")
+print(f"Work function (φ): {phi:.4e} J")
+print(f"Threshold frequency (f₀): {threshold_frequency:.4e} Hz")
+print(f"R-squared (R²): {r_value**2:.4f}")
 
-## Objectives
-
-- Observe the photoelectric effect with different light frequencies
-- Measure the corresponding stopping potentials
-- Plot stopping potential versus frequency
-- Determine Planck’s constant from the slope of the linear graph
-
----
-
-## Apparatus
-
-- Photoelectric tube
-- Set of monochromatic filters or LEDs (known frequencies)
-- Voltmeter (to measure stopping potential)
-- Variable power supply
-- Light source
-- Optical bench setup
-
----
-
-## Procedure
-
-1. Setup the photoelectric apparatus securely.
-2. Illuminate the photoemissive material with monochromatic light of a known frequency.
-3. Adjust the power supply to find the stopping potential where the photoelectric current ceases.
-4. Record the frequency and corresponding stopping potential.
-5. Repeat the process for at least 5 different frequencies.
-6. Plot the graph of stopping potential (`V₀`) vs frequency (`f`).
-7. Use the slope of the linear fit to calculate Planck’s constant.
-
----
-
-## Results
-
-Sample Data Table:
-
-| Frequency (Hz) | Stopping Potential (V) |
-|----------------|------------------------|
-| `f₁`           | `V₁`                   |
-| `f₂`           | `V₂`                   |
-| `...`          | `...`                  |
-
-Graphical analysis yields:
+plt.figure(figsize=(8, 5))
+plt.scatter(f, Vs, color='blue', label='Measured Data')
+plt.plot(f, slope * f + intercept, color='red', label='Linear Fit')
+plt.xlabel('Frequency (Hz)')
+plt.ylabel('Stopping Potential (V)')
+plt.title('Photoelectric Effect: Stopping Potential vs Frequency')
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.show()
